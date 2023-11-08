@@ -465,7 +465,8 @@ uiWindow *uiNewWindow(const char *title, int width, int height, int hasMenubar)
 		hasMenubarBOOL = TRUE;
 	w->hasMenubar = hasMenubarBOOL;
 
-#define style WS_OVERLAPPEDWINDOW
+//#define style WS_OVERLAPPEDWINDOW
+#define style WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX
 #define exstyle 0
 
 	wtitle = toUTF16(title);
@@ -487,6 +488,9 @@ uiWindow *uiNewWindow(const char *title, int width, int height, int hasMenubar)
 		if (SetMenu(w->hwnd, w->menubar) == 0)
 			logLastError(L"error giving menu to window");
 	}
+
+	// 将窗口置顶
+    SetWindowPos(w->hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 	// and use the proper size
 	setClientSize(w, width, height, hasMenubarBOOL, style, exstyle);
