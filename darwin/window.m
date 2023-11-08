@@ -177,6 +177,9 @@ static void uiWindowShow(uiControl *c)
 	uiWindow *w = (uiWindow *) c;
 
 	[w->window makeKeyAndOrderFront:w->window];
+
+	// 激活应用窗口，将焦点转移到当前应用
+	[NSApp activateIgnoringOtherApps:YES];
 }
 
 static void uiWindowHide(uiControl *c)
@@ -376,7 +379,8 @@ uiWindow *uiNewWindow(const char *title, int width, int height, int hasMenubar)
 	uiDarwinNewControl(uiWindow, w);
 
 	w->window = [[uiprivNSWindow alloc] initWithContentRect:NSMakeRect(0, 0, (CGFloat) width, (CGFloat) height)
-		styleMask:defaultStyleMask
+		//styleMask:defaultStyleMask
+		styleMask:NSWindowStyleMaskClosable | NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable
 		backing:NSBackingStoreBuffered
 		defer:YES];
 	[w->window setTitle:uiprivToNSString(title)];
@@ -392,6 +396,14 @@ uiWindow *uiNewWindow(const char *title, int width, int height, int hasMenubar)
 	[windowDelegate registerWindow:w];
 	uiWindowOnClosing(w, defaultOnClosing, NULL);
 	uiWindowOnContentSizeChanged(w, defaultOnPositionContentSizeChanged, NULL);
+
+	//窗口居中屏幕
+	CGFloat xPos = NSWidth([[w->window screen] frame])/2 - NSWidth([w->window frame])/2;
+    CGFloat yPos = NSHeight([[w->window screen] frame])/2 - NSHeight([w->window frame])/2;
+	[w->window setFrame:NSMakeRect(xPos, yPos, NSWidth([w->window frame]), NSHeight([w->window frame])) display:YES];
+
+	// 设置窗口级别为最高
+	[w->window setLevel:NSFloatingWindowLevel];
 
 	return w;
 }
