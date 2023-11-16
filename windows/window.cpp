@@ -489,6 +489,20 @@ uiWindow *uiNewWindow(const char *title, int width, int height, int hasMenubar)
 			logLastError(L"error giving menu to window");
 	}
 
+	//设置图标
+	//HICON hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(1033));
+	WCHAR szFilePath[MAX_PATH + 1] = { 0 };
+	GetModuleFileNameW(NULL, szFilePath, MAX_PATH);
+	(wcsrchr(szFilePath, '\\'))[0] = 0; // 删除文件名，只获得路径字串
+	std::wstring strIconFile = std::wstring(szFilePath) + L"\\..\\baishan-bcc-client-win32-x64\\resources\\app\\logo.ico";
+
+	HICON hIcon = ExtractIcon(NULL, strIconFile.c_str(), 0);
+	if (hIcon != NULL)
+	{
+		SendMessage(w->hwnd,WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+    	SendMessage(w->hwnd,WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+	}
+   
 	// 将窗口置顶
     SetWindowPos(w->hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
