@@ -494,7 +494,7 @@ uiWindow *uiNewWindow(const char *title, int width, int height, int hasMenubar)
 	WCHAR szFilePath[MAX_PATH + 1] = { 0 };
 	GetModuleFileNameW(NULL, szFilePath, MAX_PATH);
 	(wcsrchr(szFilePath, '\\'))[0] = 0; // 删除文件名，只获得路径字串
-	std::wstring strIconFile = std::wstring(szFilePath) + L"\\..\\baishan-bcc-client-win32-x64\\resources\\app\\logo.ico";
+	std::wstring strIconFile = std::wstring(szFilePath) + L"\\logo.ico";
 
 	HICON hIcon = ExtractIcon(NULL, strIconFile.c_str(), 0);
 	if (hIcon != NULL)
