@@ -106,6 +106,32 @@ static void msgbox(NSWindow *parent, const char *title, const char *description,
 	[a setMessageText:uiprivToNSString(title)];
 	[a setInformativeText:uiprivToNSString(description)];
 	[a addButtonWithTitle:@"OK"];
+
+	//添加图标
+	// 获取当前应用程序的 Bundle
+    NSBundle *bundle = [NSBundle mainBundle];
+	// 获取图标文件的完整路径
+    NSString *iconPath = [bundle pathForResource:@"icon" ofType:@"png"];
+	// 设置自定义图标
+    NSImage *customIcon = [[NSImage alloc] initWithContentsOfFile:iconPath];
+	if (customIcon) {
+        [a setIcon:customIcon];
+    } 
+
+	// 设置窗口级别为最高
+	[a.window setLevel:NSFloatingWindowLevel];
+
+	// 获取屏幕的尺寸
+	NSRect screenRect = [[NSScreen mainScreen] visibleFrame];
+	// 计算 NSAlert 的中心坐标
+	CGFloat centerX = NSMidX(screenRect);
+	CGFloat centerY = NSMidY(screenRect);
+	// 移动 NSAlert 到中心坐标
+	NSRect alertRect = [a.window frame];
+	alertRect.origin.x = centerX - (alertRect.size.width / 2);
+	alertRect.origin.y = centerY - (alertRect.size.height / 2);
+	[a.window setFrameOrigin:alertRect.origin];
+
 	cm = [[libuiCodeModalAlertPanel alloc] initWithPanel:a parent:parent];
 	[cm run];
 	[cm release];
